@@ -2,14 +2,12 @@ library(gridstackr)
 
 shinyApp(
   fluidPage(
+    initGS(),
     gridstack(
-      initGS(),
-      gs_item(tags$p("hola"), x = 0, y = 0, w = 4),
-      gs_item(tags$p("chau"), x = 2, y = 2, w = 4),
-      gs_item(tags$h1("chau"), x = 4, y = 0, w = 12)
+      gs_item("1", x = 0, y = 0, w = 4, h = 2),
+      gs_item("2", x = 4, y = 0, w = 4, h = 4),
+      gs_item("3", x = 0, y = 4, w = 2, h = 2)
       )
-  ),
+    ),
   function(input, output) {}
   )
-
-|
