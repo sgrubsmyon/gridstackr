@@ -5,7 +5,7 @@ Authors@R: person("Joshua", "Kunst", email = "jbkunst@gmail.com", role = c("aut"
 Description: What the package does (one paragraph).
 Depends: R (>= 3.0)
 Imports:
-    htmltools
+    shiny
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

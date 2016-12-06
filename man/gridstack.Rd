@@ -6,6 +6,9 @@
 \usage{
 gridstack(...)
 }
+\arguments{
+\item{...}{\code{gs_item} elements to include in the grid.}
+}
 \description{
 Gridstack container
 }
