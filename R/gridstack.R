@@ -7,29 +7,17 @@ initGS <- function() {
   addResourcePath("lodash", system.file("lodash", package = "gridstackr", mustWork = TRUE))
   addResourcePath("jquery-ui", system.file("jquery-ui", package = "gridstackr", mustWork = TRUE))
 
-#   css <- "
-# .grid-stack {
-#   background: lightgoldenrodyellow;
-# }
-#
-# .grid-stack-item-content {
-#   color: #2c3e50;
-#   text-align: center;
-#   background-color: #18bc9c;
-# }"
-
   css <- "
 
-.grid-stack {
+.grid-stack-wrap {
   background: #f2f2f2;
+  padding: 10px 0px;
 }
 
 .grid-stack-item-content {
     background: #fff;
     border: 1px solid #e2e2e2;
     border-radius: 3px;
-    margin-bottom: 8px;
-    margin-right: 8px;
 }
 
 .chart-title {
@@ -38,13 +26,24 @@ initGS <- function() {
     font-size: 14px;
     font-weight: 500;
     padding: 7px 10px 4px;
+    cursor: move; /* fallback if grab cursor is unsupported */
+    cursor: grab;
+    cursor: -moz-grab;
+    cursor: -webkit-grab;
+}
+
+/* https://stackoverflow.com/questions/5697067/css-for-grabbing-cursors-drag-drop */
+.chart-title:active {
+    cursor: grabbing;
+    cursor: -moz-grabbing;
+    cursor: -webkit-grabbing;
 }
 
 .chart-stage {
     overflow: auto;
     padding: 5px 10px;
     position: relative;
-    height: 90%;
+    height: 90%;  /* This is annoying.  Someone smarter than me please fix.  :) */
 }
 
 .chart-shim {
@@ -61,7 +60,7 @@ initGS <- function() {
     height: 15px;
     top: 8px;
     right: 15px;
-    background-image: url('data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgNTAwIDUwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIyNDkuOSIgY3k9IjI1MC40IiByPSIyMDQuNyIgc3Ryb2tlPSIjMDAwIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiLz48Y2lyY2xlIGN4PSIyNDkuOSIgY3k9IjI0Ny40IiBmaWxsPSIjRkZGIiByPSIxODEuOCIgc3Ryb2tlPSIjMDAwIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiLz48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiMwMDAiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2Utd2lkdGg9IjIyIiBkPSJNMTYyIDE1OS41bDE3NS44IDE3NS44TTMzNy44IDE1OS41TDE2MiAzMzUuMyIvPjwvc3ZnPg==');
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIxMSIgaGVpZ2h0PSIxNCIgdmlld0JveD0iMCAwIDExIDE0Ij4KPHBhdGggZD0iTTEwLjE0MSAxMC4zMjhxMCAwLjMxMi0wLjIxOSAwLjUzMWwtMS4wNjIgMS4wNjJxLTAuMjE5IDAuMjE5LTAuNTMxIDAuMjE5dC0wLjUzMS0wLjIxOWwtMi4yOTctMi4yOTctMi4yOTcgMi4yOTdxLTAuMjE5IDAuMjE5LTAuNTMxIDAuMjE5dC0wLjUzMS0wLjIxOWwtMS4wNjItMS4wNjJxLTAuMjE5LTAuMjE5LTAuMjE5LTAuNTMxdDAuMjE5LTAuNTMxbDIuMjk3LTIuMjk3LTIuMjk3LTIuMjk3cS0wLjIxOS0wLjIxOS0wLjIxOS0wLjUzMXQwLjIxOS0wLjUzMWwxLjA2Mi0xLjA2MnEwLjIxOS0wLjIxOSAwLjUzMS0wLjIxOXQwLjUzMSAwLjIxOWwyLjI5NyAyLjI5NyAyLjI5Ny0yLjI5N3EwLjIxOS0wLjIxOSAwLjUzMS0wLjIxOXQwLjUzMSAwLjIxOWwxLjA2MiAxLjA2MnEwLjIxOSAwLjIxOSAwLjIxOSAwLjUzMXQtMC4yMTkgMC41MzFsLTIuMjk3IDIuMjk3IDIuMjk3IDIuMjk3cTAuMjE5IDAuMjE5IDAuMjE5IDAuNTMxeiI+PC9wYXRoPgo8L3N2Zz4K');
     background-position: top left;
     background-repeat: no-repeat;
     z-index: 90;
@@ -113,10 +112,10 @@ $(function () {
 #' Gridstack container
 #' @param ... \code{gs_item} elements to include in the grid.
 #' @export
-gridstack <- function(..., height = "500") {
-
-  tags$div(class = "grid-stack", height = height, ...)
-
+gridstack <- function(..., height = "500px") {
+  tags$div(class ="grid-stack-wrap", height = height,
+    tags$div(class = "grid-stack", ...)
+  )
 }
 
 #' Gridstack Item
