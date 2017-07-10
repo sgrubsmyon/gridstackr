@@ -1,0 +1,15 @@
+dependencies:
+- name: gridstackjs
+  version: 0.3.0-dev
+  src: htmlwidgets/lib/gridstackjs
+  script: ./gridstack.min.js
+  script: ./gridstack.jQueryUI.js
+  style: ./gridstack.css
+- name: jquery-ui
+  version: 1.12.0
+  src: htmlwidgets/lib/jquery-ui
+  script: ./jquery-ui.js
+- name: lodash
+  version: 3.5.0
+  src: htmlwidgets/lib/lodash
+  script: ./lodash.min.js
