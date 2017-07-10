@@ -5,11 +5,11 @@
 #' @import htmlwidgets
 #'
 #' @export
-gridstackr <- function(message, width = NULL, height = NULL, elementId = NULL) {
+gridstackr <- function(message = NULL, width = NULL, height = NULL, elementId = NULL) {
 
   # forward options using x
   x = list(
-    message = message
+    options = message
   )
 
   # create widget
@@ -49,4 +49,14 @@ gridstackrOutput <- function(outputId, width = '100%', height = '400px'){
 renderGridstackr <- function(expr, env = parent.frame(), quoted = FALSE) {
   if (!quoted) { expr <- substitute(expr) } # force quoted
   htmlwidgets::shinyRenderWidget(expr, gridstackrOutput, env, quoted = TRUE)
+}
+
+# Add custom HTML to wrap the widget to allow for a zoom in/out menu
+gridstackr_html <- function(id, style, class, ...) {
+  htmltools::tags$div(
+    id = id, class = class, style = style,
+    htmltools::tags$div(class ="grid-stack-wrap",
+      htmltools::tags$div(class = "grid-stack")
+    )
+  )
 }

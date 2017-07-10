@@ -13,8 +13,21 @@ HTMLWidgets.widget({
       renderValue: function(x) {
 
         // TODO: code to render the widget, e.g.
-        el.innerText = x.message;
+        if (!x.options) {
+          var options = {
+            float: true,
+            cellHeight: 20,
+            verticalMargin: 10,
+            draggable: {
+              handle: '.chart-title',
+            }
+          };
+        } else {
+          var options = x.options;
+        };
 
+        var grid = $('.grid-stack').gridstack(options);
+        // console.log(options);
       },
 
       resize: function(width, height) {
