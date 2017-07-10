@@ -1,7 +1,7 @@
 library(gridstackr)
 library(crosstalk)
 library(d3scatter)
-library(DT)
+library(DT) # Crosstalk currently requires GitHub dev version of DT
 
 ## For handlers
 # Close handle:  https://github.com/troolee/gridstack.js/issues/108
@@ -9,7 +9,7 @@ wrapme <- function(..., x = 0, y = 0, w = 4, h = 4) {
   gs_item(
     tags$div(
       class = "chart-title",
-      "Chart Title",
+      tags$span("Chart Title", contenteditable=TRUE),
       tags$span(class = "gs-close-handle")),
     tags$div(class = "chart-stage",
              tags$div(class = "chart-shim",
