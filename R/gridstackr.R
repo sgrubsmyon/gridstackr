@@ -60,3 +60,31 @@ gridstackr_html <- function(id, style, class, ...) {
     )
   )
 }
+
+#' Create a gridstackr proxy object
+#'
+#' @param id Name of the gridstackr widget
+#' @param session Valid session object
+#'
+#' @return grid proxy object
+#' @export
+gridstackrProxy <- function(id, session = shiny::getDefaultReactiveDomain()) {
+  object        <- list( id = id, session = session )
+  class(object) <- "gridstackrProxy"
+
+  return(object)
+}
+
+#' Adds a new widget to the gridstack with element id
+#'
+#' @param gridstackrProxy
+#'
+#' @return gridstackrProxy
+#' @export
+addWidget <- function(gridstackrProxy) {
+  data <- list(id = gridstackrProxy$id)
+
+  gridstackrProxy$session$sendCustomMessage("addWidget", data)
+
+  return(gridstackrProxy)
+}

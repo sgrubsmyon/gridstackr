@@ -22,7 +22,7 @@ HTMLWidgets.widget({
               float: true,
               cellHeight: 20,
               verticalMargin: 10,
-              animate: true,
+              animate: false,
               // height: 10,   // Future:  Put in code to match Shiny container height $('#'+el.id).height()
               draggable: {
                 handle: '.chart-title',
@@ -44,7 +44,34 @@ HTMLWidgets.widget({
       },
 
       // Give access to grid if anyone needs it on the outside
-      grid: grid
+      getGrid: function() {
+        return grid;
+      }
     };
   }
+});
+
+// Helper function to get an existing gridstackr object via the htmlWidgets object
+function getGrid(id){
+
+  // Get the HTMLWidgets object
+  var htmlWidgetsObj = HTMLWidgets.find("#" + id);
+
+  var gridstackrObj = null;
+  if( typeof(htmlWidgetsObj) !== "undefined"){
+    // Use the getChart method we created to get the underlying C3 chart
+    gridstackrObj = htmlWidgetsObj.getGrid();
+  }
+
+  return(gridstackrObj);
+}
+
+// Custom handler to add a new widget
+Shiny.addCustomMessageHandler('addWidget', function(message) {
+  var gridstack = getGrid(message.id);
+
+  var $gsitem = $('#'+message.id).find('.grid-stack').append('<div></div>');
+  $gsitem.data('gridstack').addWidget($gsitem.children().last(), x = 0, y = 0, w = 4, h = 4);
+
+  // gridstack.el.find('.grid-stack').append('<div></div>');
 });

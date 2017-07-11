@@ -4,8 +4,7 @@
 \alias{gridstackr}
 \title{<Add Title>}
 \usage{
-gridstackr(message = NULL, width = NULL, height = NULL,
-  elementId = NULL)
+gridstackr(items = NULL, width = NULL, height = NULL, elementId = NULL)
 }
 \description{
 <Add Description>
