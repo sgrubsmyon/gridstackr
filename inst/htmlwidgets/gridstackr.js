@@ -6,36 +6,45 @@ HTMLWidgets.widget({
 
   factory: function(el, width, height) {
 
-    // TODO: define shared variables for this instance
+    // Variables to keep track of the state of the widget
+    var grid = null;
+    var options = null;
 
+    // Closure
     return {
 
-      renderValue: function(x) {
+      renderValue: function(opts) {
 
-        // TODO: code to render the widget, e.g.
-        if (!x.options) {
-          var options = {
-            float: true,
-            cellHeight: 20,
-            verticalMargin: 10,
-            draggable: {
-              handle: '.chart-title',
-            }
-          };
-        } else {
-          var options = x.options;
-        };
+        if (grid === null) {
+          if (!opts.items) {
+            // Defaults - this is inside renderValue as only place where opts appear.  My brain wanted the default initialization outside the closure.
+            options = {
+              float: true,
+              cellHeight: 20,
+              verticalMargin: 10,
+              animate: true,
+              // height: 10,   // Future:  Put in code to match Shiny container height $('#'+el.id).height()
+              draggable: {
+                handle: '.chart-title',
+              }
+            };
+          } else {
+            // No data validation yet.
+            options = opts.items;
+          }
 
-        var grid = $('.grid-stack').gridstack(options);
-        // console.log(options);
+          // Bind grid to child element with grid-stack class.
+          grid = $('#'+el.id).find('.grid-stack').gridstack(options);
+        }
+        // No updating settings yet
       },
 
       resize: function(width, height) {
+        // No resizing code necessary - gridstack.js handles this.
+      },
 
-        // TODO: code to re-render the widget with a new size
-
-      }
-
+      // Give access to grid if anyone needs it on the outside
+      grid: grid
     };
   }
 });

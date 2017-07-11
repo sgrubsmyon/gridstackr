@@ -5,11 +5,11 @@
 #' @import htmlwidgets
 #'
 #' @export
-gridstackr <- function(message = NULL, width = NULL, height = NULL, elementId = NULL) {
+gridstackr <- function(items = NULL, width = NULL, height = NULL, elementId = NULL) {
 
   # forward options using x
   x = list(
-    options = message
+    items = items
   )
 
   # create widget

@@ -2,6 +2,18 @@
   filter: none;
 }
 
+/* BEGIN: Temp to be able to see */
+.grid-stack {
+  background: lightgoldenrodyellow;
+}
+
+.grid-stack-item-content {
+  color: #2c3e50;
+  text-align: center;
+  background-color: #18bc9c;
+}
+/* END: Temp to be able to see */
+
 .grid-stack {
   position: relative;
 }
