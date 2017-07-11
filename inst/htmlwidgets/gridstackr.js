@@ -22,11 +22,11 @@ HTMLWidgets.widget({
               float: true,
               cellHeight: 20,
               verticalMargin: 10,
-              animate: false,
+              animate: true //,
               // height: 10,   // Future:  Put in code to match Shiny container height $('#'+el.id).height()
-              draggable: {
-                handle: '.chart-title',
-              }
+              // draggable: {  // Use in gridstackrplus
+              //   handle: '.chart-title',
+              // }
             };
           } else {
             // No data validation yet.
@@ -51,7 +51,7 @@ HTMLWidgets.widget({
   }
 });
 
-// Helper function to get an existing gridstackr object via the htmlWidgets object
+// Helper function to get an existing gridstackr object via the htmlWidgets object.  DO I NEED THIS?
 function getGrid(id){
 
   // Get the HTMLWidgets object
@@ -68,10 +68,9 @@ function getGrid(id){
 
 // Custom handler to add a new widget
 Shiny.addCustomMessageHandler('addWidget', function(message) {
-  var gridstack = getGrid(message.id);
-
-  var $gsitem = $('#'+message.id).find('.grid-stack').append('<div></div>');
+  var $gsitem = $('#'+message.id).find('.grid-stack').append('<div><div class="grid-stack-item-content ui-draggable-handle">1</div></div>');
   $gsitem.data('gridstack').addWidget($gsitem.children().last(), x = 0, y = 0, w = 4, h = 4);
 
+  // var gridstack = getGrid(message.id);
   // gridstack.el.find('.grid-stack').append('<div></div>');
 });

@@ -55,9 +55,9 @@ renderGridstackr <- function(expr, env = parent.frame(), quoted = FALSE) {
 gridstackr_html <- function(id, style, class, ...) {
   htmltools::tags$div(
     id = id, class = class, style = style,
-    htmltools::tags$div(class ="grid-stack-wrap",
+    # htmltools::tags$div(class ="grid-stack-wrap",
       htmltools::tags$div(class = "grid-stack")
-    )
+    # )
   )
 }
 
