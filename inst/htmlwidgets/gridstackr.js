@@ -33,7 +33,7 @@ HTMLWidgets.widget({
             options = opts.items;
           }
 
-          // Bind grid to child element with grid-stack class.
+          // Bind grid to child element with grid-stack class and store grid-stack.
           grid = $('#'+el.id).find('.grid-stack').gridstack(options);
         }
         // No updating settings yet
@@ -51,7 +51,7 @@ HTMLWidgets.widget({
   }
 });
 
-// Helper function to get an existing gridstackr object via the htmlWidgets object.  DO I NEED THIS?
+// Helper function to get an existing gridstackr object via the htmlWidgets object.
 function getGrid(id){
 
   // Get the HTMLWidgets object
@@ -59,7 +59,7 @@ function getGrid(id){
 
   var gridstackrObj = null;
   if( typeof(htmlWidgetsObj) !== "undefined"){
-    // Use the getChart method we created to get the underlying C3 chart
+    // Use the getChart method we created to get the underlying gridstack
     gridstackrObj = htmlWidgetsObj.getGrid();
   }
 
@@ -68,9 +68,8 @@ function getGrid(id){
 
 // Custom handler to add a new widget
 Shiny.addCustomMessageHandler('addWidget', function(message) {
-  var $gsitem = $('#'+message.id).find('.grid-stack').append('<div><div class="grid-stack-item-content ui-draggable-handle">1</div></div>');
+  Shiny.unbindAll();
+  var $gsitem = getGrid(message.id).append(message.content);
   $gsitem.data('gridstack').addWidget($gsitem.children().last(), x = 0, y = 0, w = 4, h = 4);
-
-  // var gridstack = getGrid(message.id);
-  // gridstack.el.find('.grid-stack').append('<div></div>');
+  Shiny.bindAll();
 });

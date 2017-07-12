@@ -55,9 +55,7 @@ renderGridstackr <- function(expr, env = parent.frame(), quoted = FALSE) {
 gridstackr_html <- function(id, style, class, ...) {
   htmltools::tags$div(
     id = id, class = class, style = style,
-    # htmltools::tags$div(class ="grid-stack-wrap",
       htmltools::tags$div(class = "grid-stack")
-    # )
   )
 }
 
@@ -75,14 +73,21 @@ gridstackrProxy <- function(id, session = shiny::getDefaultReactiveDomain()) {
   return(object)
 }
 
-#' Adds a new widget to the gridstack with element id
+#' Adds a new widget to the gridstack
 #'
-#' @param gridstackrProxy
+#' Right now, assuming entire widget is draggable.
+#'
+#' @param gridstackrProxy Proxy gridstackr object
+#' @param content Widget HTML content
 #'
 #' @return gridstackrProxy
 #' @export
-addWidget <- function(gridstackrProxy) {
-  data <- list(id = gridstackrProxy$id)
+addWidget <- function(gridstackrProxy, content = floor(runif(1, max = 10))) {
+  data <- list(id = gridstackrProxy$id,
+               content = as.character(tags$div(
+                 tags$div(class = "grid-stack-item-content ui-draggable-handle",
+                          content)
+               )))
 
   gridstackrProxy$session$sendCustomMessage("addWidget", data)
 
