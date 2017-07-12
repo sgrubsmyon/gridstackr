@@ -78,18 +78,24 @@ gridstackrProxy <- function(id, session = shiny::getDefaultReactiveDomain()) {
 #' Right now, assuming entire widget is draggable.
 #'
 #' @param gridstackrProxy Proxy gridstackr object
-#' @param content Widget HTML content
+#' @param ui Shiny UI content.  If just text, need to use HTML(...)
 #'
 #' @return gridstackrProxy
 #' @export
-addWidget <- function(gridstackrProxy, content = floor(runif(1, max = 10))) {
+addWidget <- function(gridstackrProxy, ui = HTML("I am a widget!")) {
   data <- list(id = gridstackrProxy$id,
                content = as.character(tags$div(
-                 tags$div(class = "grid-stack-item-content ui-draggable-handle",
-                          content)
+                 tags$div(class = "grid-stack-item-content ui-draggable-handle")
                )))
 
   gridstackrProxy$session$sendCustomMessage("addWidget", data)
+
+  # addWidget JS function appends new grid-stack-item to the end, so we need
+  # to make sure the selector grabs the content of the last grid-stack-item.
+  insertUI(
+    selector = paste0("#", data$id, " .grid-stack-item:last-child .grid-stack-item-content"),
+    ui = ui
+  )
 
   return(gridstackrProxy)
 }

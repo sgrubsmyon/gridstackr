@@ -68,8 +68,6 @@ function getGrid(id){
 
 // Custom handler to add a new widget
 Shiny.addCustomMessageHandler('addWidget', function(message) {
-  Shiny.unbindAll();
   var $gsitem = getGrid(message.id).append(message.content);
   $gsitem.data('gridstack').addWidget($gsitem.children().last(), x = 0, y = 0, w = 4, h = 4);
-  Shiny.bindAll();
 });
