@@ -16,22 +16,7 @@ HTMLWidgets.widget({
       renderValue: function(opts) {
 
         if (grid === null) {
-          if (!opts.items) {
-            // Defaults - this is inside renderValue as only place where opts appear.  My brain wanted the default initialization outside the closure.
-            options = {
-              float: true,
-              cellHeight: 20,
-              verticalMargin: 10,
-              animate: true,
-              draggable: {
-                handle: '.grid-stack-item-content' // This is already default in gridstack.js, but want to make explicit here.
-              }
-              // height: 10,   // Future:  Put in code to match Shiny container height $('#'+el.id).height()
-            };
-          } else {
-            // No data validation yet.
-            options = opts.items;
-          }
+          options = opts.items;
 
           // Bind grid to child element with grid-stack class and store grid-stack.
           grid = $('#'+el.id).find('.grid-stack').gridstack(options);

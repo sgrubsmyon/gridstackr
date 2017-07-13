@@ -5,12 +5,37 @@ library(d3scatter)
 library(shiny)
 library(DT)
 
+myWidget <- function(gridstackrProxy,
+                     ui = HTML("Hello, World!"),
+                     title = "Chart Title") {
+
+  contentWrapperCode <- tagList(
+    tags$div(
+      class = "chart-title",
+      tags$span(title),
+      tags$span(class = "gs-close-handle")
+    ),
+    tags$div(class = "chart-stage",
+             tags$div(class = "chart-shim"))
+  )
+
+  return(addWidget(gridstackrProxy,
+                   contentWrapperCode = contentWrapperCode,
+                   ui = ui,
+                   uiWrapperClass = ".chart-shim"))
+}
+
+myGridstackr <- function() {
+  gridstackr(list(draggable = list(handle = ".chart-title")))
+}
+
 shinyApp(
   ui <- fluidPage(
-    actionButton("btn1","Create widget in stack 1"),
-    actionButton("btn2","Create widget in stack 2"),
-    gridstackrOutput("gstack1"),
-    gridstackrOutput("gstack2")
+    includeCSS("www/myWidget.css"),
+    includeScript("www/myWidget.js"),
+    actionButton("btn1","Create dataset widget"),
+    actionButton("btn2","Create plot widget"),
+    gridstackrOutput("gstack")
     ),
   server <- function(input, output) {
     shared_iris <- SharedData$new(iris)
@@ -19,8 +44,8 @@ shinyApp(
       # ui
       id <- paste0("tbl-",input$btn1)
 
-      gridstackrProxy("gstack1") %>%
-        addWidget(ui = DT::dataTableOutput(id))
+      gridstackrProxy("gstack") %>%
+        myWidget(ui = DT::dataTableOutput(id))
 
       # server
       output[[id]] = DT::renderDataTable(
@@ -35,8 +60,8 @@ shinyApp(
       # ui
       id <- paste0("plot-",input$btn1)
 
-      gridstackrProxy("gstack2") %>%
-        addWidget(ui = d3scatterOutput(id))
+      gridstackrProxy("gstack") %>%
+        myWidget(ui = d3scatterOutput(id))
 
       # server
       output[[id]] <- renderD3scatter({
@@ -48,12 +73,8 @@ shinyApp(
       })
     })
 
-    output$gstack1 <- renderGridstackr({
-      gridstackr()
-    })
-
-    output$gstack2 <- renderGridstackr({
-      gridstackr()
+    output$gstack <- renderGridstackr({
+      myGridstackr()
     })
 
   }

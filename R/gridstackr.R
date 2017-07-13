@@ -7,9 +7,21 @@
 #' @export
 gridstackr <- function(items = NULL, width = NULL, height = NULL, elementId = NULL) {
 
-  # forward options using x
+  # Default options
+  options = list(
+    float = TRUE,
+    cellHeight = 20,
+    verticalMargin = 10,
+    animate = TRUE,
+    draggable = list(
+      handle = '.grid-stack-item-content' # This is already default in gridstack.js, but want to make explicit here.
+    )
+    # height: 10,   # Future:  Put in code to match Shiny container height $('#'+el.id).height()
+  )
+
+  # No data validation yet
   x = list(
-    items = items
+    items = modifyList(options, items)
   )
 
   # create widget
@@ -80,26 +92,31 @@ gridstackrProxy <- function(id, session = shiny::getDefaultReactiveDomain()) {
 #' Right now, assuming entire widget is draggable.
 #'
 #' @param gridstackrProxy Proxy gridstackr object
+#' @param contentWrapperCode Wrapper code for gridstack item UI
+#' @param uiWrapperClass Class/ID of element for Shiny UI (class within contentWrapperCode)
 #' @param ui Shiny UI content.  If just text, need to use HTML(...)
-#' @param wrapper Wrapper code surrounding
-#' @param draggable Class/ID of draggable element for
 #'
 #' @return gridstackrProxy
 #' @export
 addWidget <- function(gridstackrProxy,
-                      ui = HTML("I am a widget!"),
-                      wrapper = tags$div(class = "grid-stack-item-content ui-draggable-handle"),
-                      draggable = ".grid-stack-item-content") {
+                      contentWrapperCode = "",
+                      uiWrapperClass = ".grid-stack-item-content",
+                      ui = HTML("I am a widget!")) {
 
   data <- list(id = gridstackrProxy$id,
-               content = as.character(tags$div(wrapper)))
+               content = as.character(tags$div(              # Becomes .grid-stack-item
+                 tags$div(class = "grid-stack-item-content",
+                          contentWrapperCode)
+                 )
+                 )
+               )
 
   gridstackrProxy$session$sendCustomMessage("addWidget", data)
 
   # addWidget JS function appends new grid-stack-item to the end, so we need
   # to make sure the selector grabs the content of the last grid-stack-item.
   insertUI(
-    selector = paste0("#", data$id, " .grid-stack-item:last-child ", draggable),
+    selector = paste0("#", data$id, " .grid-stack-item:last-child ", uiWrapperClass),
     ui = ui
   )
 
