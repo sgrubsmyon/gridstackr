@@ -73,27 +73,33 @@ gridstackrProxy <- function(id, session = shiny::getDefaultReactiveDomain()) {
   return(object)
 }
 
+# NEED TO ADD ui-draggable to proper class!!!
+
 #' Adds a new widget to the gridstack
 #'
 #' Right now, assuming entire widget is draggable.
 #'
 #' @param gridstackrProxy Proxy gridstackr object
 #' @param ui Shiny UI content.  If just text, need to use HTML(...)
+#' @param wrapper Wrapper code surrounding
+#' @param draggable Class/ID of draggable element for
 #'
 #' @return gridstackrProxy
 #' @export
-addWidget <- function(gridstackrProxy, ui = HTML("I am a widget!")) {
+addWidget <- function(gridstackrProxy,
+                      ui = HTML("I am a widget!"),
+                      wrapper = tags$div(class = "grid-stack-item-content ui-draggable-handle"),
+                      draggable = ".grid-stack-item-content") {
+
   data <- list(id = gridstackrProxy$id,
-               content = as.character(tags$div(
-                 tags$div(class = "grid-stack-item-content ui-draggable-handle")
-               )))
+               content = as.character(tags$div(wrapper)))
 
   gridstackrProxy$session$sendCustomMessage("addWidget", data)
 
   # addWidget JS function appends new grid-stack-item to the end, so we need
   # to make sure the selector grabs the content of the last grid-stack-item.
   insertUI(
-    selector = paste0("#", data$id, " .grid-stack-item:last-child .grid-stack-item-content"),
+    selector = paste0("#", data$id, " .grid-stack-item:last-child ", draggable),
     ui = ui
   )
 

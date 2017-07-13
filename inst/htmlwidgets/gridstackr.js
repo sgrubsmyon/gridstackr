@@ -22,11 +22,11 @@ HTMLWidgets.widget({
               float: true,
               cellHeight: 20,
               verticalMargin: 10,
-              animate: true //,
+              animate: true,
+              draggable: {
+                handle: '.grid-stack-item-content' // This is already default in gridstack.js, but want to make explicit here.
+              }
               // height: 10,   // Future:  Put in code to match Shiny container height $('#'+el.id).height()
-              // draggable: {  // Use in gridstackrplus
-              //   handle: '.chart-title',
-              // }
             };
           } else {
             // No data validation yet.
