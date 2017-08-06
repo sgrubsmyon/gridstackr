@@ -9,14 +9,14 @@ gridstackr <- function(items = NULL, width = NULL, height = NULL, elementId = NU
 
   # Default options
   options = list(
-    float = TRUE,
-    cellHeight = 20,
+    float = FALSE,
+    cellHeight = "auto",
     verticalMargin = 10,
     animate = TRUE,
     draggable = list(
       handle = '.grid-stack-item-content' # This is already default in gridstack.js, but want to make explicit here.
     )
-    # height: 10,   # Future:  Put in code to match Shiny container height $('#'+el.id).height()
+    # height = 0   # Future:  Put in code to match Shiny container height $('#'+el.id).height()
   )
 
   # No data validation yet
@@ -35,6 +35,8 @@ gridstackr <- function(items = NULL, width = NULL, height = NULL, elementId = NU
   )
 }
 
+# Shiny autogen ----
+
 #' Shiny bindings for gridstackr
 #'
 #' Output and render functions for using gridstackr within Shiny
@@ -52,7 +54,7 @@ gridstackr <- function(items = NULL, width = NULL, height = NULL, elementId = NU
 #' @name gridstackr-shiny
 #'
 #' @export
-gridstackrOutput <- function(outputId, width = '100%', height = '400px'){
+gridstackrOutput <- function(outputId, width = '100%', height = 'auto'){
   htmlwidgets::shinyWidgetOutput(outputId, 'gridstackr', width, height, package = 'gridstackr')
 }
 
@@ -63,6 +65,8 @@ renderGridstackr <- function(expr, env = parent.frame(), quoted = FALSE) {
   htmlwidgets::shinyRenderWidget(expr, gridstackrOutput, env, quoted = TRUE)
 }
 
+# Custom HTML ----
+
 # Add custom HTML to wrap the widget to allow for a zoom in/out menu
 gridstackr_html <- function(id, style, class, ...) {
   htmltools::tags$div(
@@ -70,6 +74,8 @@ gridstackr_html <- function(id, style, class, ...) {
       htmltools::tags$div(class = "grid-stack")
   )
 }
+
+# API ----
 
 #' Create a gridstackr proxy object
 #'
@@ -85,28 +91,29 @@ gridstackrProxy <- function(id, session = shiny::getDefaultReactiveDomain()) {
   return(object)
 }
 
-# NEED TO ADD ui-draggable to proper class!!!
-
 #' Adds a new widget to the gridstack
 #'
 #' Right now, assuming entire widget is draggable.
 #'
 #' @param gridstackrProxy Proxy gridstackr object
-#' @param contentWrapperCode Wrapper code for gridstack item UI
-#' @param uiWrapperClass Class/ID of element for Shiny UI (class within contentWrapperCode)
+#' @param id ID for gridstack item
+#' @param content Code for gridstack item UI
+#' @param uiWrapperClass Class/ID of element for Shiny UI (class within content)
 #' @param ui Shiny UI content.  If just text, need to use HTML(...)
 #'
 #' @return gridstackrProxy
 #' @export
 addWidget <- function(gridstackrProxy,
-                      contentWrapperCode = "",
+                      id = "",
+                      content = "",
                       uiWrapperClass = ".grid-stack-item-content",
                       ui = HTML("I am a widget!")) {
 
-  data <- list(id = gridstackrProxy$id,
-               content = as.character(tags$div(              # Becomes .grid-stack-item
+  data <- list(gridID = gridstackrProxy$id,
+               itemID = id,
+               content = as.character(tags$div(  # Becomes .grid-stack-item
                  tags$div(class = "grid-stack-item-content",
-                          contentWrapperCode)
+                          content)
                  )
                  )
                )
@@ -116,9 +123,40 @@ addWidget <- function(gridstackrProxy,
   # addWidget JS function appends new grid-stack-item to the end, so we need
   # to make sure the selector grabs the content of the last grid-stack-item.
   insertUI(
-    selector = paste0("#", data$id, " .grid-stack-item:last-child ", uiWrapperClass),
+    selector = paste0("#", data$gridID, " .grid-stack-item:last-child ", uiWrapperClass),
     ui = ui
   )
 
   return(gridstackrProxy)
 }
+
+#' Removes a widget from the gridstack
+#'
+#' @param gridstackrProxy
+#' @param id Name of the gridstackr widget
+#' @param el Element to be removed
+#'
+#' @return gridstackrProxy
+#' @export
+#'
+#' @examples
+removeWidget <- function(gridstackrProxy,
+                         gridID = "",
+                         itemID = "") {
+
+  # Deciding to utilize removeUI for now.  This is possibly overkill - the other option is
+  # to just use gridstack's removeWidget JS function, in combination with Shiny.bindAll()
+  # and Shiny.unbindAll().  These seem to have some issues at the moment, so going the
+  # cleaner, yet more code-wordy, route.
+  removeUI(selector = paste0("#", itemID, " .chart-shim :first-child"),
+           session = gridstackrProxy$session)
+
+  data <- list(gridID = gridID,
+               itemID = itemID
+               )
+
+  gridstackrProxy$session$sendCustomMessage("removeWidget", data)
+
+  return(gridstackrProxy)
+}
+

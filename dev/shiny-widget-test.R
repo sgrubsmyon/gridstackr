@@ -5,34 +5,39 @@ library(d3scatter)
 library(shiny)
 library(DT)
 
+# Custom widget code.  Adds a title element, a close "button", and a place for content.
+#
+# The first argument, and return object, must be a gridstackrProxy for this function to
+# work with the %>% operator.
+#
+# Notice in the call to addWidget that the uiWrapperClass is changed to chart-shim,
+# telling gridstackr where to place the Shiny UI content.
 myWidget <- function(gridstackrProxy,
+                     id = "",
                      ui = HTML("Hello, World!"),
                      title = "Chart Title") {
 
-  contentWrapperCode <- tagList(
+  content <- tagList(
     tags$div(
       class = "chart-title",
       tags$span(title),
-      tags$span(class = "gs-close-handle")
+      tags$span(class = "gs-remove-handle")
     ),
     tags$div(class = "chart-stage",
              tags$div(class = "chart-shim"))
   )
 
   return(addWidget(gridstackrProxy,
-                   contentWrapperCode = contentWrapperCode,
+                   id = id,
+                   content = content,
                    ui = ui,
                    uiWrapperClass = ".chart-shim"))
-}
-
-myGridstackr <- function() {
-  gridstackr(list(draggable = list(handle = ".chart-title")))
 }
 
 shinyApp(
   ui <- fluidPage(
     includeCSS("www/myWidget.css"),
-    includeScript("www/myWidget.js"),
+    # includeScript("www/myWidget.js"), # Taking out for now while I test built-in support
     actionButton("btn1","Create dataset widget"),
     actionButton("btn2","Create plot widget"),
     gridstackrOutput("gstack")
@@ -45,7 +50,8 @@ shinyApp(
       id <- paste0("tbl-",input$btn1)
 
       gridstackrProxy("gstack") %>%
-        myWidget(ui = DT::dataTableOutput(id))
+        myWidget(id = paste0(id, "-item"),
+                 ui = DT::dataTableOutput(id))
 
       # server
       output[[id]] = DT::renderDataTable(
@@ -58,10 +64,11 @@ shinyApp(
 
     observeEvent(input$btn2, {
       # ui
-      id <- paste0("plot-",input$btn1)
+      id <- paste0("plot-",input$btn2)
 
       gridstackrProxy("gstack") %>%
-        myWidget(ui = d3scatterOutput(id))
+        myWidget(id = paste0(id, "-item"),
+                 ui = d3scatterOutput(id))
 
       # server
       output[[id]] <- renderD3scatter({
@@ -74,8 +81,15 @@ shinyApp(
     })
 
     output$gstack <- renderGridstackr({
-      myGridstackr()
+      gridstackr(list(
+        draggable = list(handle = ".chart-title")
+        ))
     })
 
+    observeEvent(input$jsRemove, {
+      gridstackrProxy("gstack") %>%
+        removeWidget(gridID = input$jsRemove$gridID,
+                     itemID = input$jsRemove$itemID)
+    })
   }
 )

@@ -6,7 +6,7 @@
 \alias{renderGridstackr}
 \title{Shiny bindings for gridstackr}
 \usage{
-gridstackrOutput(outputId, width = "100\%", height = "400px")
+gridstackrOutput(outputId, width = "100\%", height = "auto")
 
 renderGridstackr(expr, env = parent.frame(), quoted = FALSE)
 }

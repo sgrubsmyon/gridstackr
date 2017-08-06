@@ -11,6 +11,7 @@
     background: #fff;
     border: 1px solid #e2e2e2;
     border-radius: 3px;
+    overflow-y: hidden !important;
 }
 
 .chart-title {
@@ -47,7 +48,7 @@
     bottom: 8px;
 }
 
-.gs-close-handle {
+.gs-remove-handle {
     opacity: 90;
     width: 15px;
     height: 15px;

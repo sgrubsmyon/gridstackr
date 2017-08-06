@@ -2,16 +2,23 @@
 % Please edit documentation in R/gridstackr.R
 \name{addWidget}
 \alias{addWidget}
-\title{Adds a new widget to the gridstack with element id}
+\title{Adds a new widget to the gridstack}
 \usage{
-addWidget(gridstackrProxy)
+addWidget(gridstackrProxy, content = "",
+  uiWrapperClass = ".grid-stack-item-content", ui = HTML("I am a widget!"))
 }
 \arguments{
-\item{gridstackrProxy}{}
+\item{gridstackrProxy}{Proxy gridstackr object}
+
+\item{content}{Code for gridstack item UI}
+
+\item{uiWrapperClass}{Class/ID of element for Shiny UI (class within content)}
+
+\item{ui}{Shiny UI content.  If just text, need to use HTML(...)}
 }
 \value{
 gridstackrProxy
 }
 \description{
-Adds a new widget to the gridstack with element id
+Right now, assuming entire widget is draggable.
 }

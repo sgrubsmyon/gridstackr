@@ -51,8 +51,35 @@ function getGrid(id){
   return(gridstackrObj);
 }
 
+// ---- R -> Javascript
+
 // Custom handler to add a new widget
 Shiny.addCustomMessageHandler('addWidget', function(message) {
-  var $gsitem = getGrid(message.id).append(message.content);
+  var $gsitem = getGrid(message.gridID).append(message.content);
   $gsitem.data('gridstack').addWidget($gsitem.children().last(), x = 0, y = 0, w = 4, h = 4);
+  if (message.itemID) {
+    $gsitem.children().last().attr('id', message.itemID);
+  }
+});
+
+// Custom handler to remove a widget
+Shiny.addCustomMessageHandler('removeWidget', function(message) {
+  Shiny.unbindAll();
+  var $gsitem = getGrid(message.gridID);
+  $gsitem.data('gridstack').removeWidget($('#'+message.itemID));
+  Shiny.bindAll();
+});
+
+// ---- Javascript -> R
+
+// Send message to R upon widget remove request
+$("document").ready(function() {
+  $('.grid-stack').on('click', '.gs-remove-handle', function() {
+      var message = {
+        gridID: $(this).parents('.gridstackr').attr('id'),
+        itemID: $(this).parents('.grid-stack-item').attr('id'),
+        nonce: Math.random()
+      };
+      Shiny.onInputChange("jsRemove", message);
+  });
 });
