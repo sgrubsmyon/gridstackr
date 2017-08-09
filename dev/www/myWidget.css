@@ -32,7 +32,7 @@
     overflow: auto;
     padding: 5px 10px;
     position: relative;
-    height: 90%;  /* This is annoying.  Someone smarter than me please fix.  :) */
+    height: 100%;
 }
 
 .chart-shim {

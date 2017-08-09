@@ -10,7 +10,7 @@ gridstackr <- function(items = NULL, width = NULL, height = NULL, elementId = NU
   # Default options
   options = list(
     float = FALSE,
-    cellHeight = "auto",
+    cellHeight = 10,
     verticalMargin = 10,
     animate = TRUE,
     draggable = list(
@@ -146,8 +146,8 @@ removeWidget <- function(gridstackrProxy,
 
   # Deciding to utilize removeUI for now.  This is possibly overkill - the other option is
   # to just use gridstack's removeWidget JS function, in combination with Shiny.bindAll()
-  # and Shiny.unbindAll().  These seem to have some issues at the moment, so going the
-  # cleaner, yet more code-wordy, route.
+  # and Shiny.unbindAll().  These last two functions seem to have some issues at the moment,
+  # so going the cleaner, yet more code-wordy, route.
   removeUI(selector = paste0("#", itemID, " .chart-shim :first-child"),
            session = gridstackrProxy$session)
 

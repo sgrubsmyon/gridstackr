@@ -5,6 +5,9 @@ library(d3scatter)
 library(shiny)
 library(DT)
 
+options(DT.fillContainer = TRUE)
+options(DT.autoHideNavigation = TRUE)
+
 # Custom widget code.  Adds a title element, a close "button", and a place for content.
 #
 # The first argument, and return object, must be a gridstackrProxy for this function to
@@ -56,8 +59,6 @@ shinyApp(
       # server
       output[[id]] = DT::renderDataTable(
         shared_iris,
-        extensions = "Scroller",
-        options = list(lengthChange = FALSE),
         server = FALSE
       )
     })
