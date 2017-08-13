@@ -5,6 +5,8 @@ library(d3scatter)
 library(shiny)
 library(DT)
 
+# Needed to deal with flexdashboard/shiny issues.
+# See https://github.com/rstudio/flexdashboard/issues/28 and https://github.com/rstudio/flexdashboard/commit/854a2ceb867522fa892d66417a43733e476c92ec
 options(DT.fillContainer = TRUE)
 options(DT.autoHideNavigation = TRUE)
 
@@ -43,7 +45,7 @@ shinyApp(
     # includeScript("www/myWidget.js"), # Taking out for now while I test built-in support
     actionButton("btn1","Create dataset widget"),
     actionButton("btn2","Create plot widget"),
-    gridstackrOutput("gstack")
+    gridstackrOutput("gstack", height="400px")
     ),
   server <- function(input, output) {
     shared_iris <- SharedData$new(iris)

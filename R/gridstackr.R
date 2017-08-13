@@ -6,6 +6,8 @@
 #'
 #' @export
 gridstackr <- function(items = NULL, width = NULL, height = NULL, elementId = NULL) {
+  # NOTE:  width and height aren't working properly.  Check this!!!
+  # When does this get called?  shinyWidgetOutput or shinyRenderOutput?
 
   # Default options
   options = list(
@@ -18,6 +20,14 @@ gridstackr <- function(items = NULL, width = NULL, height = NULL, elementId = NU
     )
     # height = 0   # Future:  Put in code to match Shiny container height $('#'+el.id).height()
   )
+
+  if (!is.null(height)) {
+    # Assumes height is "###px".
+    options.height <- floor(as.integer(substr(height, 1, nchar(height)-2)) / options.cellHeight)
+
+    # Make height a multiple of cellHeight to match options.height
+    height <- paste0(as.character(options.height * options.cellHeight), "px")
+  }
 
   # No data validation yet
   x = list(
