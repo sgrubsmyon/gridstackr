@@ -75,16 +75,6 @@ renderGridstackr <- function(expr, env = parent.frame(), quoted = FALSE) {
   htmlwidgets::shinyRenderWidget(expr, gridstackrOutput, env, quoted = TRUE)
 }
 
-# Custom HTML ----
-
-# Add custom HTML to wrap the widget to allow for a zoom in/out menu
-gridstackr_html <- function(id, style, class, ...) {
-  htmltools::tags$div(
-    id = id, class = class, style = style,
-      htmltools::tags$div(class = "grid-stack")
-  )
-}
-
 # API ----
 
 #' Create a gridstackr proxy object
