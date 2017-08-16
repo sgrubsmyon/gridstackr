@@ -37,7 +37,7 @@ HTMLWidgets.widget({
 });
 
 // Helper function to get an existing gridstackr object via the htmlWidgets object.
-function getGrid(id){
+function getGrid(id) {
 
   // Get the HTMLWidgets object
   var htmlWidgetsObj = HTMLWidgets.find("#" + id);
@@ -64,6 +64,7 @@ Shiny.addCustomMessageHandler('addWidget', function(message) {
 
 // Custom handler to remove a widget
 Shiny.addCustomMessageHandler('removeWidget', function(message) {
+  // Do I need unbindAll/bindAll???
   Shiny.unbindAll();
   var $gsitem = getGrid(message.gridID);
   $gsitem.data('gridstack').removeWidget($('#'+message.itemID));

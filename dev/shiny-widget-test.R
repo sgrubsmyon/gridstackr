@@ -26,6 +26,7 @@ myWidget <- function(gridstackrProxy,
     tags$div(
       class = "chart-title",
       tags$span(title),
+      icon("dashboard", class="gs-minimize-handle"),
       tags$span(class = "gs-remove-handle")
     ),
     tags$div(class = "chart-stage",
@@ -45,7 +46,7 @@ shinyApp(
     # includeScript("www/myWidget.js"), # Taking out for now while I test built-in support
     actionButton("btn1","Create dataset widget"),
     actionButton("btn2","Create plot widget"),
-    gridstackrOutput("gstack", height="400px")
+    gridstackrOutput("gstack")
     ),
   server <- function(input, output) {
     shared_iris <- SharedData$new(iris)
@@ -90,9 +91,21 @@ shinyApp(
     })
 
     observeEvent(input$jsRemove, {
+      showModal(modalDialog(
+        tags$b("Are you sure you want to close this widget?"),
+        footer = tagList(
+          modalButton("No"),
+          actionButton("remove", "Yes, close widget")
+        ),
+        size = "s"
+      ))
+    })
+
+    observeEvent(input$remove, {
       gridstackrProxy("gstack") %>%
         removeWidget(gridID = input$jsRemove$gridID,
                      itemID = input$jsRemove$itemID)
+      removeModal()
     })
   }
 )

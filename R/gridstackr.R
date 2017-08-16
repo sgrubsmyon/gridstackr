@@ -21,13 +21,13 @@ gridstackr <- function(items = NULL, width = NULL, height = NULL, elementId = NU
     # height = 0   # Future:  Put in code to match Shiny container height $('#'+el.id).height()
   )
 
-  if (!is.null(height)) {
-    # Assumes height is "###px".
-    options.height <- floor(as.integer(substr(height, 1, nchar(height)-2)) / options.cellHeight)
-
-    # Make height a multiple of cellHeight to match options.height
-    height <- paste0(as.character(options.height * options.cellHeight), "px")
-  }
+  # if (!is.null(height)) {
+  #   # Assumes height is "###px".
+  #   options.height <- floor(as.integer(substr(height, 1, nchar(height)-2)) / options.cellHeight)
+  #
+  #   # Make height a multiple of cellHeight to match options.height
+  #   height <- paste0(as.character(options.height * options.cellHeight), "px")
+  # }
 
   # No data validation yet
   x = list(
@@ -41,6 +41,7 @@ gridstackr <- function(items = NULL, width = NULL, height = NULL, elementId = NU
     width = width,
     height = height,
     package = 'gridstackr',
+    dependencies = rmarkdown::html_dependency_font_awesome(), # Widgets don't load these automatically like Shiny
     elementId = elementId
   )
 }
@@ -73,6 +74,16 @@ gridstackrOutput <- function(outputId, width = '100%', height = 'auto'){
 renderGridstackr <- function(expr, env = parent.frame(), quoted = FALSE) {
   if (!quoted) { expr <- substitute(expr) } # force quoted
   htmlwidgets::shinyRenderWidget(expr, gridstackrOutput, env, quoted = TRUE)
+}
+
+# Custom HTML ----
+
+# Add custom HTML to wrap the widget (called automatically by createWidget)
+gridstackr_html <- function(id, style, class, ...) {
+  htmltools::tags$div(
+    id = id, class = class, style = style,
+    htmltools::tags$div(class = "grid-stack")
+  )
 }
 
 # API ----
