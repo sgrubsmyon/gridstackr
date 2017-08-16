@@ -71,10 +71,10 @@ Shiny.addCustomMessageHandler('removeWidget', function(message) {
   Shiny.bindAll();
 });
 
-// ---- Javascript -> R
+// ---- Javascript -> Javascript, Javascript -> R
 
-// Send message to R upon widget remove request
 $("document").ready(function() {
+  // Send message to R upon widget remove request
   $('.grid-stack').on('click', '.gs-remove-handle', function() {
       var message = {
         gridID: $(this).parents('.gridstackr').attr('id'),
@@ -83,4 +83,40 @@ $("document").ready(function() {
       };
       Shiny.onInputChange("jsRemove", message);
   });
+
+  // Next two events handle minimization and restoration of items.  No need to communicate with R.
+  $('.grid-stack').on('click', '.gs-minimize-handle', function() {
+    // Get item and gridstack
+    var $item = $(this).parents('.grid-stack-item');
+    var gstack = getGrid($(this).parents('.gridstackr').attr('id'));
+    var $handle = $item.find(".gs-minimize-handle");
+
+    // Save current height and minimize
+    $item.attr('data-gs-height-restore', $item.attr('data-gs-height'));
+    gstack.data("gridstack").resize($item, width=null, height=2);
+
+    // Modify classes and toggle resizability
+    $handle.removeClass("fa-minus").addClass("fa-plus");
+    $handle.removeClass("gs-minimize-handle").addClass("gs-restore-handle");
+    gstack.data("gridstack").resizable($item, false);
+    $item.find(".ui-resizable-handle").css("display", "none");  // resizable() doesn't toggle visibility for some reason
+  });
+
+  $('.grid-stack').on('click', '.gs-restore-handle', function() {
+    // Get item and gridstack
+    var $item = $(this).parents('.grid-stack-item');
+    var gstack = getGrid($(this).parents('.gridstackr').attr('id'));
+    var $handle = $item.find(".gs-restore-handle");
+
+    // Restore current height and remove attribute
+    gstack.data("gridstack").resize($item, width=null, height=parseInt($item.attr('data-gs-height-restore')));
+    $item.removeAttr('data-gs-height-restore');
+
+    // Modify classes and toggle resizability
+    $handle.removeClass("fa-plus").addClass("fa-minus");
+    $handle.removeClass("gs-restore-handle").addClass("gs-minimize-handle");
+    gstack.data("gridstack").resizable($item, true);
+    $item.find(".ui-resizable-handle").css("display", "block");  // resizable() doesn't toggle visibility for some reason
+  });
+
 });
