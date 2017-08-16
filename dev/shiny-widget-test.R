@@ -26,8 +26,11 @@ myWidget <- function(gridstackrProxy,
     tags$div(
       class = "chart-title",
       tags$span(title),
-      icon("dashboard", class="gs-minimize-handle"),
-      tags$span(class = "gs-remove-handle")
+      tags$div(
+        class = "action-icons",
+        icon("minus", class = "gs-minimize-handle"),
+        icon("close", class = "gs-remove-handle")
+      )
     ),
     tags$div(class = "chart-stage",
              tags$div(class = "chart-shim"))
