@@ -63,12 +63,13 @@ Shiny.addCustomMessageHandler('addWidget', function(message) {
 });
 
 // Custom handler to remove a widget
+// Keeping Shiny.bindAll() and unbindAll() in in case want to simplify in future (i.e.
+//   not go from JavaScript -> R (removeUI) -> JavaScript (removeWidget)
 Shiny.addCustomMessageHandler('removeWidget', function(message) {
-  // Do I need unbindAll/bindAll???
-  Shiny.unbindAll();
+  // Shiny.unbindAll();
   var $gsitem = getGrid(message.gridID);
   $gsitem.data('gridstack').removeWidget($('#'+message.itemID));
-  Shiny.bindAll();
+  // Shiny.bindAll();
 });
 
 // ---- Javascript -> Javascript, Javascript -> R
@@ -84,7 +85,7 @@ $("document").ready(function() {
       Shiny.onInputChange("jsRemove", message);
   });
 
-  // Next two events handle minimization and restoration of items.  No need to communicate with R.
+  // Next two events handle minimization and restoration of items.  No need to communicate with R.  Code redundancy here - might want to refactor in the future.
   $('.grid-stack').on('click', '.gs-minimize-handle', function() {
     // Get item and gridstack
     var $item = $(this).parents('.grid-stack-item');

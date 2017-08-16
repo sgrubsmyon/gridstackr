@@ -115,7 +115,7 @@ gridstackrProxy <- function(id, session = shiny::getDefaultReactiveDomain()) {
 #' @return gridstackrProxy
 #' @export
 addWidget <- function(gridstackrProxy,
-                      id = "",
+                      id,
                       content = "",
                       uiWrapperClass = ".grid-stack-item-content",
                       ui = HTML("I am a widget!")) {
@@ -152,18 +152,18 @@ addWidget <- function(gridstackrProxy,
 #'
 #' @examples
 removeWidget <- function(gridstackrProxy,
-                         gridID = "",
-                         itemID = "") {
+                         id,
+                         uiWrapperClass = ".grid-stack-item-content") {
 
   # Deciding to utilize removeUI for now.  This is possibly overkill - the other option is
   # to just use gridstack's removeWidget JS function, in combination with Shiny.bindAll()
   # and Shiny.unbindAll().  These last two functions seem to have some issues at the moment,
   # so going the cleaner, yet more code-wordy, route.
-  removeUI(selector = paste0("#", itemID, " .chart-shim :first-child"),
+  removeUI(selector = paste0("#", id, " ", uiWrapperClass, " :first-child"),
            session = gridstackrProxy$session)
 
-  data <- list(gridID = gridID,
-               itemID = itemID
+  data <- list(gridID = gridstackrProxy$id,
+               itemID = id
                )
 
   gridstackrProxy$session$sendCustomMessage("removeWidget", data)

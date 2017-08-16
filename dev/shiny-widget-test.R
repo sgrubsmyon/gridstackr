@@ -105,9 +105,9 @@ shinyApp(
     })
 
     observeEvent(input$remove, {
-      gridstackrProxy("gstack") %>%
-        removeWidget(gridID = input$jsRemove$gridID,
-                     itemID = input$jsRemove$itemID)
+      gridstackrProxy(input$jsRemove$gridID) %>%
+        removeWidget(id = input$jsRemove$itemID,
+                     uiWrapperClass = '.chart-shim')
       removeModal()
     })
   }
