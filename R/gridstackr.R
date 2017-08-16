@@ -122,7 +122,7 @@ addWidget <- function(gridstackrProxy,
 
   data <- list(gridID = gridstackrProxy$id,
                itemID = id,
-               content = as.character(tags$div(  # Becomes .grid-stack-item
+               content = as.character(tags$div(id = id,  # Becomes .grid-stack-item
                  tags$div(class = "grid-stack-item-content",
                           content)
                  )
@@ -131,10 +131,11 @@ addWidget <- function(gridstackrProxy,
 
   gridstackrProxy$session$sendCustomMessage("addWidget", data)
 
-  # addWidget JS function appends new grid-stack-item to the end, so we need
-  # to make sure the selector grabs the content of the last grid-stack-item.
   insertUI(
-    selector = paste0("#", data$gridID, " .grid-stack-item:last-child ", uiWrapperClass),
+    selector = paste(
+      paste0("#", data$gridID),
+      paste0("#", data$itemID),
+      uiWrapperClass),
     ui = ui
   )
 
@@ -155,10 +156,14 @@ removeWidget <- function(gridstackrProxy,
                          id,
                          uiWrapperClass = ".grid-stack-item-content") {
 
-  # Deciding to utilize removeUI for now.  This is possibly overkill - the other option is
+  # Notes: Deciding to utilize removeUI for now.  This is possibly overkill - the other option is
   # to just use gridstack's removeWidget JS function, in combination with Shiny.bindAll()
   # and Shiny.unbindAll().  These last two functions seem to have some issues at the moment,
   # so going the cleaner, yet more code-wordy, route.
+  #
+  # Also, might want to store uiWrapperClass on widget creation so don't need to pass
+  # this again.  Seems to be asking for user error...
+
   removeUI(selector = paste0("#", id, " ", uiWrapperClass, " :first-child"),
            session = gridstackrProxy$session)
 

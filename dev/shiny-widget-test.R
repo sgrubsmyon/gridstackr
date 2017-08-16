@@ -18,7 +18,7 @@ options(DT.autoHideNavigation = TRUE)
 # Notice in the call to addWidget that the uiWrapperClass is changed to chart-shim,
 # telling gridstackr where to place the Shiny UI content.
 myWidget <- function(gridstackrProxy,
-                     id = "",
+                     id,
                      ui = HTML("Hello, World!"),
                      title = "Chart Title") {
 

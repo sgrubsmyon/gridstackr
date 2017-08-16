@@ -53,13 +53,12 @@ function getGrid(id) {
 
 // ---- R -> Javascript
 
+// Note:  Might want to make item ids gridID + itemID so can have same itemID in different stacks.  Right now, based on best practices, items must have unique IDs, even across different stacks
+
 // Custom handler to add a new widget
 Shiny.addCustomMessageHandler('addWidget', function(message) {
-  var $gsitem = getGrid(message.gridID).append(message.content);
-  $gsitem.data('gridstack').addWidget($gsitem.children().last(), x = 0, y = 0, minWidth = 4, minHeight = 10, autoPosition = true);
-  if (message.itemID) {
-    $gsitem.children().last().attr('id', message.itemID);
-  }
+  var $gstack = getGrid(message.gridID).append(message.content);
+  $gstack.data('gridstack').addWidget($('#'+message.itemID), x = 0, y = 0, minWidth = 4, minHeight = 10, autoPosition = true);
 });
 
 // Custom handler to remove a widget
@@ -67,8 +66,8 @@ Shiny.addCustomMessageHandler('addWidget', function(message) {
 //   not go from JavaScript -> R (removeUI) -> JavaScript (removeWidget)
 Shiny.addCustomMessageHandler('removeWidget', function(message) {
   // Shiny.unbindAll();
-  var $gsitem = getGrid(message.gridID);
-  $gsitem.data('gridstack').removeWidget($('#'+message.itemID));
+  var $gstack = getGrid(message.gridID);
+  $gstack.data('gridstack').removeWidget($('#'+message.itemID));
   // Shiny.bindAll();
 });
 
