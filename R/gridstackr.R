@@ -30,9 +30,13 @@ gridstackr <- function(items = NULL, width = NULL, height = NULL, elementId = NU
   # }
 
   # No data validation yet
-  x = list(
-    items = modifyList(options, items)
-  )
+  if (!is.null(items)) {
+    x = list(
+      items = modifyList(options, items)
+    )
+  } else {
+    x = options
+  }
 
   # create widget
   htmlwidgets::createWidget(
@@ -44,6 +48,28 @@ gridstackr <- function(items = NULL, width = NULL, height = NULL, elementId = NU
     dependencies = rmarkdown::html_dependency_font_awesome(), # Widgets don't load these automatically like Shiny
     elementId = elementId
   )
+}
+
+
+#' Initialization for gridstackr object
+#'
+#' @param ui  UI code
+#' @param server Server code
+#' @param env Environment
+#' @param .ns Namespace (from call to shiny::NS)
+#'
+#' @return
+#' @export
+#'
+#' @examples
+initGridstackr <- function(ui, server, env = parent.frame(), .ns = NS("init")) {
+  env$.ns = .ns
+
+  env$session$onFlushed(function() {
+    observe(ui)
+  })
+
+  force(server)
 }
 
 # Shiny autogen ----

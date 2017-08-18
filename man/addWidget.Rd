@@ -4,11 +4,13 @@
 \alias{addWidget}
 \title{Adds a new widget to the gridstack}
 \usage{
-addWidget(gridstackrProxy, content = "",
+addWidget(gridstackrProxy, id, content = "",
   uiWrapperClass = ".grid-stack-item-content", ui = HTML("I am a widget!"))
 }
 \arguments{
 \item{gridstackrProxy}{Proxy gridstackr object}
+
+\item{id}{ID for gridstack item}
 
 \item{content}{Code for gridstack item UI}
 

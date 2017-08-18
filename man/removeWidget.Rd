@@ -4,7 +4,7 @@
 \alias{removeWidget}
 \title{Removes a widget from the gridstack}
 \usage{
-removeWidget(gridstackrProxy, id = "", el = "")
+removeWidget(gridstackrProxy, id, uiWrapperClass = ".grid-stack-item-content")
 }
 \arguments{
 \item{id}{Name of the gridstackr widget}

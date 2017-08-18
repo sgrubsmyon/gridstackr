@@ -40,38 +40,6 @@ myWidget <- function(gridstackrProxy,
                    uiWrapperClass = ".chart-shim"))
 }
 
-initGridstackr <- function(input, output, session, histdata) {
-  ns <- NS("0")
-
-  session$onFlushed(function() {
-    # ui
-    observe({
-      gridstackrProxy("gstack") %>%
-        myWidget(id = paste0('widget', ns("slider")),
-                 ui = sliderInput(ns("slider"), "Number of observations:", 1, 100, 50),
-                 title = "Controls") %>%
-        myWidget(id = paste0('widget', ns('plot')),
-                 ui = plotOutput(ns("plot"), height = 250),
-                 title = "Histogram")
-    })
-  })
-
-  # server
-  output[[ns("plot")]] <- renderPlot({
-    data <- histdata[seq_len(input[[ns("slider")]])]
-    hist(data)
-  })
-}
-
-# fluidRow(
-#   box(plotOutput("plot1", height = 250)),
-#
-#   box(
-#     title = "Controls",
-#     sliderInput("slider", "Number of observations:", 1, 100, 50)
-#   )
-# )
-
 ui <- dashboardPage(
   dashboardHeader(title = "Sample Layout"),
   dashboardSidebar(
@@ -114,7 +82,22 @@ server <- function(input, output, session) {
     ))
   })
 
-  initGridstackr(input, output, session, histdata)
+  initGridstackr(
+    ui <- {
+      gridstackrProxy("gstack") %>%
+        myWidget(id = paste0('widget-', .ns("slider")),
+                 ui = sliderInput(.ns("slider"), "Number of observations:", 1, 100, 50),
+                 title = "Controls") %>%
+        myWidget(id = paste0('widget-', .ns('plot')),
+                 ui = plotOutput(.ns("plot"), height = 250),
+                 title = "Histogram")
+    },
+    server <- {
+      output[[.ns("plot")]] <- renderPlot({
+        data <- histdata[seq_len(input[[.ns("slider")]])]
+        hist(data)
+      })
+    })
 
   observeEvent(input$btn, {
     ns <- NS(input$btn)
@@ -122,9 +105,7 @@ server <- function(input, output, session) {
     gridstackrProxy("gstack") %>%
       myWidget(id = paste0('widget', ns('slider')),
                ui = sliderInput(ns('slider'), "Number of observations:", 1, 100, 50),
-               title = "Controls")
-
-    gridstackrProxy("gstack") %>%
+               title = "Controls") %>%
       myWidget(id = paste0('widget', ns('plot')),
                ui = plotOutput(ns('plot'), height = 250),
                title = "Histogram")
