@@ -1,13 +1,26 @@
 #' Setup for a gridstackjs
 #' @importFrom shiny addResourcePath singleton HTML tags
+#' @param css Put your CSS string here. If NULL, defaults to:
+#' \code{
+#'   .grid-stack \{
+#'     background: lightgoldenrodyellow;
+#'   \}
+#'
+#'   .grid-stack-item-content \{
+#'     color: #2c3e50;
+#'     text-align: center;
+#'     background-color: #18bc9c;
+#'   \}
+#' }
 #' @export
-initGS <- function() {
+initGS <- function(css = NULL, options = list(float = TRUE, cellHeight = 80, verticalMargin = 10)) {
 
   addResourcePath("gridstackjs", system.file("gridstackjs", package = "gridstackr", mustWork = TRUE))
   addResourcePath("lodash", system.file("lodash", package = "gridstackr", mustWork = TRUE))
   addResourcePath("jquery-ui", system.file("jquery-ui", package = "gridstackr", mustWork = TRUE))
 
-  css <- "
+  if (is.null(css)) {
+    css <- "
 .grid-stack {
   background: lightgoldenrodyellow;
 }
@@ -16,17 +29,15 @@ initGS <- function() {
   color: #2c3e50;
   text-align: center;
   background-color: #18bc9c;
-}"
+}
+    "
+  }
 
-  initconf <- "
+  initconf <- sprintf("
 $(function () {
-  var options = {
-    float: true,
-    cellHeight: 80,
-    verticalMargin: 10
-  };
+  var options = %s;
   $('.grid-stack').gridstack(options);
-});";
+});", rjson::toJSON(options))
 
   singleton(
     tags$head(
@@ -40,7 +51,6 @@ $(function () {
 
       tags$style(HTML(css)),
       tags$script(HTML(initconf))
-
     )
   )
 }
@@ -58,7 +68,7 @@ gridstack <- function(..., height = "500") {
 #' @param ... Elements to include within the grid item.
 #' @param x x position to put the grid item.
 #' @param y y position to put the grid item.
-#' @param w weight of the grid item.
+#' @param w width of the grid item.
 #' @param h height of the grid item.
 #' @export
 gs_item <- function(..., x = 0, y = 0, w = 4, h = 4) {

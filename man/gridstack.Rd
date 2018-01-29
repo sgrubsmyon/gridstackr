@@ -4,7 +4,7 @@
 \alias{gridstack}
 \title{Gridstack container}
 \usage{
-gridstack(...)
+gridstack(..., height = "500")
 }
 \arguments{
 \item{...}{\code{gs_item} elements to include in the grid.}
@@ -12,4 +12,3 @@ gridstack(...)
 \description{
 Gridstack container
 }
-

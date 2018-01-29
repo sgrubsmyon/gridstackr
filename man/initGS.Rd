@@ -4,9 +4,23 @@
 \alias{initGS}
 \title{Setup for a gridstackjs}
 \usage{
-initGS()
+initGS(css = NULL, options = list(float = TRUE, cellHeight = 80,
+  verticalMargin = 10))
+}
+\arguments{
+\item{css}{Put your CSS string here. If NULL, defaults to:
+\code{
+  .grid-stack \{
+    background: lightgoldenrodyellow;
+  \}
+
+  .grid-stack-item-content \{
+    color: #2c3e50;
+    text-align: center;
+    background-color: #18bc9c;
+  \}
+}}
 }
 \description{
 Setup for a gridstackjs
 }
-

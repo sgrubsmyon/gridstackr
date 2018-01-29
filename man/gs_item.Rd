@@ -13,11 +13,10 @@ gs_item(..., x = 0, y = 0, w = 4, h = 4)
 
 \item{y}{y position to put the grid item.}
 
-\item{w}{weight of the grid item.}
+\item{w}{width of the grid item.}
 
-\item{h}{height  of the grid item.}
+\item{h}{height of the grid item.}
 }
 \description{
 Gridstack Item
 }
-
